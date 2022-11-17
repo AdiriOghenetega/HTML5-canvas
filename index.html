@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/image/favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML5 canvas</title>
+    <title>Quick draw</title>
 </head>
 <body>
+    <div class="button__container">
+        <button onclick={clearCanvas()}>clear</button>
+        <button onclick={download()}>download</button>
+        <img src="/image/favicon.ico" width="30px" height="30px" />
+        <h3>Quick draw</h3>
+    </div>
     <canvas class="myCanvas" ></canvas>
     <script>
         const canvas = document.querySelector('.myCanvas');
@@ -24,6 +31,17 @@
         let direction = true ; 
         let colorSelect = 0;
 
+
+function download(){
+    console.log("clicked")
+  image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+  var link = document.createElement('a');
+  link.download = "my-image.png";
+  link.href = image;
+  link.click(); 
+}
+
+
         function draw(e){
             if(!isDrawing) return;
         
@@ -33,16 +51,16 @@
             ctx.stroke();
             [lastX,lastY]=[e.offsetX,e.offsetY]
 
-            if(ctx.lineWidth <= 1 || ctx.lineWidth > 100){
-                direction = !direction
-            }
-            if(direction){
-                ctx.lineWidth++
-            }else{
-                ctx.lineWidth--
-            }
+            // if(ctx.lineWidth <= 1 || ctx.lineWidth > 100){
+            //     direction = !direction
+            // }
+            // if(direction){
+            //     ctx.lineWidth++
+            // }else{
+            //     ctx.lineWidth--
+            // }
 
-            ctx.strokeStyle = `hsl(${colorSelect},50%,50%)`
+            ctx.strokeStyle = `hsl(${colorSelect},50%,50%)`;
             colorSelect++
             if(colorSelect>360){
                 colorSelect = 0;
@@ -50,21 +68,41 @@
 
         }
 
-        canvas.addEventListener('mousemove',draw);
-        canvas.addEventListener('mousedown',(e)=>{
+        canvas.addEventListener('pointermove',draw);
+        canvas.addEventListener('pointerdown',(e)=>{
             isDrawing = true;
             [lastX,lastY]=[e.offsetX,e.offsetY]
         });
-        canvas.addEventListener('mouseup',()=>isDrawing = false);
+        canvas.addEventListener('pointerup',()=>isDrawing = false);
 
-
-
+function clearCanvas(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
     </script>
     <style>
         html, body {
           margin: 0;
           overflow: hidden;
         }
+        .button__container{
+            position: absolute;
+            padding: 1em;
+            display: flex;
+            width: 16em;
+            justify-content: space-between;
+            align-items: center;
+            height: 5vh;
+            background-color: gray;
+        }
+        button{
+            color: black;
+            position: relative;
+            height: 100%;
+        }
+        .button__container h3{
+            color: greenyellow;
+        }
+        
       </style>
 </body>
 </html>
